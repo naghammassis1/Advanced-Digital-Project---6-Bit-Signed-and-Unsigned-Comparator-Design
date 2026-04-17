@@ -9,7 +9,9 @@ Supports:
 Signed (2’s complement)
 Unsigned numbers
 Outputs:
-A > B, A < B, A == B
+A > B
+A < B
+A == B
 Two implementations:
 Structural (logic gates)
 Behavioral (Verilog operators)
