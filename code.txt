@@ -1,0 +1,225 @@
+//Nagham Massis - 1220149
+module unsigned_comparator6bit (A, B, G, L, E);
+    input [5:0] A, B;  
+    output G, L, E;         
+     
+	wire nA5, nA4, nA3, nA2, nA1, nA0;
+	wire eq5, eq4, eq3, eq2, eq1, eq0;
+	wire nB5, nB4, nB3, nB2, nB1, nB0;
+    wire gt5, gt4, gt3, gt2, gt1, gt0;
+    wire lt5, lt4, lt3, lt2, lt1, lt0;
+	
+	not #2 (nA5, A[5]);
+    not #2 (nA4, A[4]); 
+    not #2 (nA3, A[3]);
+    not #2 (nA2, A[2]); 
+    not #2 (nA1, A[1]); 
+    not #2 (nA0, A[0]);
+
+    not #2 (nB5, B[5]); 
+    not #2 (nB4, B[4]); 
+    not #2 (nB3, B[3]); 
+    not #2 (nB2, B[2]); 
+    not #2 (nB1, B[1]); 
+    not #2 (nB0, B[0]);  
+
+    xnor #9 (eq5, A[5], B[5]); 
+    xnor #9 (eq4, A[4], B[4]); 
+    xnor #9 (eq3, A[3], B[3]); 
+    xnor #9 (eq2, A[2], B[2]); 
+    xnor #9 (eq1, A[1], B[1]); 
+    xnor #9 (eq0, A[0], B[0]); 
+	and #8 (E, eq5, eq4, eq3, eq2, eq1, eq0); 
+
+    and #8 (gt5, A[5], nB5);                      
+    and #8 (gt4, A[4], nB4, eq5);               
+    and #8 (gt3, A[3], nB3, eq5, eq4);           
+    and #8 (gt2, A[2], nB2, eq5, eq4, eq3);      
+    and #8 (gt1, A[1], nB1, eq5, eq4, eq3, eq2); 
+    and #8 (gt0, A[0], nB0, eq5, eq4, eq3, eq2, eq1); 
+	or #8 (G, gt5, gt4, gt3, gt2, gt1, gt0); 
+
+    and #8 (lt5, nA5, B[5]);                      
+    and #8 (lt4, nA4, B[4], eq5);             
+    and #8 (lt3, nA3, B[3], eq5, eq4);         
+    and #8 (lt2, nA2, B[2], eq5, eq4, eq3);      
+    and #8 (lt1, nA1, B[1], eq5, eq4, eq3, eq2); 
+    and #8 (lt0, nA0, B[0], eq5, eq4, eq3, eq2, eq1); 
+	or #8 (L, lt5, lt4, lt3, lt2, lt1, lt0);
+	//nor #8 (L, lt5, lt4, lt3, lt2, lt1, lt0);	  //an error to detect the system
+
+endmodule	
+
+///////////////////////////////////////////////////////////////////////////////////////////	 
+
+module signed_comparator6bit (A, B, G, L, E);
+    input [5:0] A, B;    
+    output G, L, E;      
+
+    wire eq5, eq4, eq3, eq2, eq1, eq0; 
+    wire nA5, nA4, nA3, nA2, nA1, nA0;  
+    wire nB5, nB4, nB3, nB2, nB1, nB0;  
+    wire gt5, gt4, gt3, gt2, gt1, gt0;  
+    wire lt5, lt4, lt3, lt2, lt1, lt0;  
+
+    not #2 (nA5, A[5]);
+    not #2 (nA4, A[4]); 
+    not #2 (nA3, A[3]);
+    not #2 (nA2, A[2]); 
+    not #2 (nA1, A[1]); 
+    not #2 (nA0, A[0]);
+
+    not #2 (nB5, B[5]); 
+    not #2 (nB4, B[4]); 
+    not #2 (nB3, B[3]); 
+    not #2 (nB2, B[2]); 
+    not #2 (nB1, B[1]); 
+    not #2 (nB0, B[0]);  
+
+    xnor #9 (eq5, A[5], B[5]); 
+    xnor #9 (eq4, A[4], B[4]); 
+    xnor #9 (eq3, A[3], B[3]); 
+    xnor #9 (eq2, A[2], B[2]); 
+    xnor #9 (eq1, A[1], B[1]); 
+    xnor #9 (eq0, A[0], B[0]); 
+	and #8 (E, eq5, eq4, eq3, eq2, eq1, eq0);
+
+    and #8 (gt5, nA5, B[5]);                        
+    and #8 (gt4, A[4], nB4, eq5);               
+    and #8 (gt3, A[3], nB3, eq5, eq4);           
+    and #8 (gt2, A[2], nB2, eq5, eq4, eq3);      
+    and #8 (gt1, A[1],nB1, eq5, eq4, eq3, eq2); 
+    and #8 (gt0, A[0],nB0, eq5, eq4, eq3, eq2, eq1); 
+	or #8 (G, gt5, gt4, gt3, gt2, gt1, gt0);
+
+    and #8 (lt5, A[5], nB5);                        
+    and #8 (lt4, nA4, B[4], eq5);             
+    and #8 (lt3, nA3, B[3], eq5, eq4);         
+    and #8 (lt2, nA2, B[2], eq5, eq4, eq3);      
+    and #8 (lt1, nA1, B[1], eq5, eq4, eq3, eq2); 
+    and #8 (lt0, nA0, B[0], eq5, eq4, eq3, eq2, eq1); 
+	or #8 (L, lt5, lt4, lt3, lt2, lt1, lt0);
+	
+endmodule
+	 
+
+/////////////////////////////////////////////////////////////////////////////
+
+module comparator6bit_1 (A, B, S, clk, G, L, E);
+    input [5:0] A, B;     
+    input S, clk;        
+    output reg G, L, E;
+
+    reg [5:0] in1, in2; 
+    reg s;             
+    wire G_unsigned, L_unsigned, E_unsigned; 
+    wire G_signed, L_signed, E_signed; 
+
+    unsigned_comparator6bit u1 (.A(in1), .B(in2), .G(G_unsigned), .L(L_unsigned), .E(E_unsigned));
+    signed_comparator6bit u2 (.A(in1), .B(in2), .G(G_signed), .L(L_signed), .E(E_signed));
+
+    always @(posedge clk) begin
+        in1 <= A;
+        in2 <= B;
+        s <= S;
+    end
+
+    always @(posedge clk) begin
+        if (s) begin
+            G <= G_signed;
+            L <= L_signed;
+            E <= E_signed;
+        end else begin
+            G <= G_unsigned;
+            L <= L_unsigned;
+            E <= E_unsigned;
+        end
+    end
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module comparator6bit_2 (A, B, S, clk, G, L, E);
+    input [5:0] A, B;     
+    input S, clk;        
+    output reg G, L, E;
+
+    reg [5:0] in1, in2; 
+    reg s;              
+
+    always @(posedge clk) begin
+        in1 <= A;
+        in2 <= B;
+        s <= S;
+    end
+
+    always @(posedge clk) begin
+        if (s) begin
+            G <= $signed(in1) > $signed(in2);
+            L <= $signed(in1) < $signed(in2);
+            E <= $signed(in1) == $signed(in2);
+        end else begin
+            G <= in1 > in2;
+            L <= in1 < in2;
+            E <= in1 == in2;
+        end
+    end
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module comparator6bit_tb;
+    reg [5:0] A, B;         
+    reg S, clk;            
+    wire G1, L1, E1, G2, L2, E2;
+    reg flag;
+    
+    comparator6bit_1 unit1 (.A(A), .B(B), .S(S), .clk(clk), .G(G1), .L(L1), .E(E1));
+    comparator6bit_2 unit2 (.A(A), .B(B), .S(S), .clk(clk), .G(G2), .L(L2), .E(E2));
+    
+    always #15 clk = ~clk;
+	
+    initial begin 
+        clk = 0; 
+        flag = 0; 
+        S = 0; 
+        A = 6'b000000; 
+        B = 6'b000000;
+
+        $monitor("Time: %0t | clk: %b | A: %6b | B: %6b | S: %b | G1: %b | L1: %b | E1: %b | G2: %b | L2: %b | E2: %b", $time, clk, A, B, S, G1, L1, E1, G2, L2, E2);
+
+        repeat(64) begin 
+			#30 A = A + 1;
+			#30 S = ~S;
+            repeat(64) begin  
+                if ({G1, L1, E1} !== {G2, L2, E2}) begin
+                    flag = 1; 
+                    $display("Mismatch at Time: %0t | A: %6b | B: %6b | S: %b | G1: %b, L1: %b, E1: %b | G2: %b, L2: %b, E2: %b", $time, A, B, S, G1, L1, E1, G2, L2, E2);
+                end
+                #30 B = B + 1;
+            end      
+        end
+		
+		if (flag == 0) begin
+            $display("PASS: All test vectors matched.");
+        end 
+	    else begin
+            $display("FAIL: Mismatches found during testing.");
+		end
+	
+        #300 $finish;	
+    end
+endmodule
+
+
+ 
+
+
+
+
+
+
+
+
